@@ -49,7 +49,7 @@ def plot_matrix (target_test,target_predite):
     print(confusion_matrix(target_test,target_predite))
 
 
-
+######################################################
 
 def plot_learning_curve (nom_model, jeu_entrainement, target_entrainement) :
     # Génération de la courbe d'apprentissage
@@ -74,7 +74,7 @@ def plot_learning_curve (nom_model, jeu_entrainement, target_entrainement) :
     ax.legend(loc="best")
     plt.show()
 
-
+##########################################################
 
 def plot_features_importance(nom_model, jeu_entrainement) :   
     # Obtenir l'importance des caractéristiques
@@ -95,6 +95,30 @@ def plot_features_importance(nom_model, jeu_entrainement) :
     plt.ylim([0, 0.6])
     plt.show()
 
+###########################################################
+
+
+def plot_features_importance_10(nom_model, jeu_entrainement, top_n=10):
+    # Obtenir l'importance des caractéristiques
+    importances = abs(nom_model.coef_[0])
+
+    # Trier l'importance des caractéristiques en ordre décroissant
+    indices = np.argsort(importances)[::-1][:top_n]
+
+    # Nom des caractéristiques
+    feature_names = list(jeu_entrainement.columns)
+
+    # Tracer le graphique de l'importance des caractéristiques
+    plt.figure(figsize=(10, 6))
+    plt.title("Importance des caractéristiques")
+    plt.bar(range(len(indices)), importances[indices], color="b", align="center")
+    plt.xticks(range(len(indices)), [feature_names[i] for i in indices], rotation=90)
+    plt.xlim([-1, len(indices)])
+    plt.ylim([0, 0.6])
+    plt.show()
+
+
+##########################################################    
 
 
 def plot_roc_auc(nom_model,jeu_test,target_test):
@@ -120,7 +144,7 @@ def plot_roc_auc(nom_model,jeu_test,target_test):
 
 
 
-
+##########################################################
 
 def plot_nan_percent(df_nan, title_name, tight_layout = True, figsize = (20,8), grid = False, rotation = 90):
     
@@ -166,24 +190,32 @@ def plot_matrix (target_test,target_predite):
     print(confusion_matrix(target_test,target_predite))        
 
 
+############################################
 
+def imputer_donnees(X):
+    """
+    Impute les valeurs manquantes dans un jeu de données.
+    
+    Parameters:
+    X : DataFrame
+        Le jeu de données à imputer.
+        
+    Returns:
+    DataFrame
+        Le jeu de données avec les valeurs manquantes imputées.
+    """
+    # Listes des colonnes catégorielles et numériques
+    colonnes_catégorielles = [colonne for colonne in X.columns if X[colonne].dtype == 'object']
+    colonnes_numériques = [colonne for colonne in X.columns if X[colonne].dtype in ['int64', 'float64']]
 
+    # Imputation par mode pour les variables catégorielles
+    imputeur_mode = SimpleImputer(strategy='most_frequent')
+    for colonne in colonnes_catégorielles:
+        X[colonne] = imputeur_mode.fit_transform(X[[colonne]])
 
-def plot_features_importance(nom_model, jeu_entrainement) :
-    # Obtenir l'importance des caractéristiques
-    importances = abs(nom_model.coef_[0])
+    # Imputation par médiane pour les variables numériques
+    imputeur_median = SimpleImputer(strategy='median')
+    for colonne in colonnes_numériques:
+        X[colonne] = imputeur_median.fit_transform(X[[colonne]])
 
-    # Trier l'importance des caractéristiques en ordre décroissant
-    indices = np.argsort(importances)[::-1]
-
-    # Nom des caractéristiques
-    feature_names = list(jeu_entrainement.columns)
-
-    # Tracer le graphique de l'importance des caractéristiques
-    plt.figure(figsize=(10, 6))
-    plt.title("Importance des caractéristiques")
-    plt.bar(range(jeu_entrainement.shape[1]), importances[indices], color="b", align="center")
-    plt.xticks(range(jeu_entrainement.shape[1]), [feature_names[i] for i in indices], rotation=90)
-    plt.xlim([-1, jeu_entrainement.shape[1]])
-    plt.ylim([0, 0.6])
-    plt.show()    
+    return X    
