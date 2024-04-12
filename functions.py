@@ -1,4 +1,6 @@
 from sklearn.pipeline import Pipeline
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
@@ -157,3 +159,31 @@ def plot_nan_percent(df_nan, title_name, tight_layout = True, figsize = (20,8), 
         plt.show()
     else:
         print(f"The dataframe {title_name} does not contain any NaN values.")
+
+
+
+def plot_matrix (target_test,target_predite):
+    print(confusion_matrix(target_test,target_predite))        
+
+
+
+
+
+def plot_features_importance(nom_model, jeu_entrainement) :
+    # Obtenir l'importance des caractéristiques
+    importances = abs(nom_model.coef_[0])
+
+    # Trier l'importance des caractéristiques en ordre décroissant
+    indices = np.argsort(importances)[::-1]
+
+    # Nom des caractéristiques
+    feature_names = list(jeu_entrainement.columns)
+
+    # Tracer le graphique de l'importance des caractéristiques
+    plt.figure(figsize=(10, 6))
+    plt.title("Importance des caractéristiques")
+    plt.bar(range(jeu_entrainement.shape[1]), importances[indices], color="b", align="center")
+    plt.xticks(range(jeu_entrainement.shape[1]), [feature_names[i] for i in indices], rotation=90)
+    plt.xlim([-1, jeu_entrainement.shape[1]])
+    plt.ylim([0, 0.6])
+    plt.show()    
