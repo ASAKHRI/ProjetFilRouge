@@ -7,7 +7,6 @@ from sklearn.preprocessing import RobustScaler, MinMaxScaler, LabelEncoder
 with open('models/xgb_v3.pkl','rb') as file :
     model = pickle.load(file)
 
-
 st.set_page_config(
     page_title = " :bank: Prédiction de solvabilité client",
     page_icon= ":bank:",
@@ -15,6 +14,7 @@ st.set_page_config(
     initial_sidebar_state="expanded")
 
 st.title(":classical_building: Prediction de solvabilité")
+
 
 
 col1, col2 = st.columns(2)
