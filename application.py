@@ -89,16 +89,26 @@ with col2:
 
 #####
 
+    st.subheader("COT1")
+    # Utilisation du widget st.number_input()
+    EXT_SOURCE_1 = st.number_input("COT1", min_value=0.0, max_value=1.0,  step=0.001)
+    # Affichage de la valeur saisie
+    st.write("COT1", EXT_SOURCE_1)
      # Sidebar pour la taille du ménage
-    st.subheader('cotation_1')
-    EXT_SOURCE_1 = st.slider('cotation_1:', min_value=0.0, max_value=1.0, step = 0.001)
     
-    st.subheader('cotation_2')
-    EXT_SOURCE_2 = st.slider('cotation_2:', min_value=0.0, max_value=1.0, step = 0.001)
 
+    st.subheader("COT2")
+    # Utilisation du widget st.number_input()
+    EXT_SOURCE_2 = st.number_input("COT2", min_value=0.0, max_value=1.0,  step=0.001)
+    # Affichage de la valeur saisie
+    st.write("COT2", EXT_SOURCE_2)
+
+    st.subheader("COT3")
+    # Utilisation du widget st.number_input()
+    EXT_SOURCE_3 = st.number_input("COT3", min_value=0.0, max_value=1.0,  step=0.001)
+    # Affichage de la valeur saisie
+    st.write("COT3", EXT_SOURCE_3)
      # Sidebar pour la taille du ménage
-    st.subheader('cotation_3')
-    EXT_SOURCE_3 = st.slider('cotation_3', min_value=0.0, max_value=1.0, step = 0.001)
 
 ################
 ################
