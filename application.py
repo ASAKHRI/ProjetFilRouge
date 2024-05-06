@@ -1,3 +1,5 @@
+
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -165,3 +167,4 @@ if st.button('Prédire'):
 
     # Afficher le résultat de la prédiction
     st.write("La prédiction de solvabilité du client est :", prediction)
+
