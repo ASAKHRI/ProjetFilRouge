@@ -8,47 +8,27 @@ from sklearn.preprocessing import LabelEncoder,MinMaxScaler,StandardScaler,OneHo
 from lightgbm import LGBMClassifier
 
 
-
-model = joblib.load('pipeline.pkl')
-   
-
 st.set_page_config(
     page_title = " :bank: Prédiction de solvabilité client",
     page_icon= ":bank:",
     layout="wide",
     initial_sidebar_state="expanded")
+# Afficher les versions des bibliothèques
+st.write("Version de Streamlit:", st.__version__)
+st.write("Version de pandas:", pd.__version__)
+st.write("Version de numpy:", np.__version__)
+st.write("Version de scikit-learn:", joblib.__version__)
 
 
 
-def predict():
-    row = np.array([NAME_CONTRACT_TYPE,
-    FLAG_OWN_CAR,CNT_CHILDREN,AMT_INCOME_TOTAL,
-    AMT_CREDIT_x,AMT_ANNUITY_x,AMT_GOODS_PRICE,
-    DAYS_BIRTH,DAYS_EMPLOYED,CNT_FAM_MEMBERS,
-    EXT_SOURCE_1,EXT_SOURCE_2,EXT_SOURCE_3
-    ])
-    # data = {
-    #     'NAME_CONTRACT_TYPE': [selected_contract],
-    #     'FLAG_OWN_CAR': [selected_Véhicule],
-    #     'CNT_CHILDREN': [CNT_CHILDREN],
-    #     'AMT_INCOME_TOTAL': [AMT_INCOME_TOTAL],
-    #     'AMT_CREDIT_x': [AMT_CREDIT_x],
-    #     'AMT_ANNUITY_x': [AMT_ANNUITY_x],
-    #     'AMT_GOODS_PRICE': [AMT_GOODS_PRICE],
-    #     'DAYS_BIRTH': [DAYS_BIRTH],
-    #     'DAYS_EMPLOYED': [DAYS_EMPLOYED],
-    #     'CNT_FAM_MEMBERS': [CNT_FAM_MEMBERS],
-    #     'EXT_SOURCE_1': [EXT_SOURCE_1],
-    #     'EXT_SOURCE_2': [EXT_SOURCE_2],
-    #     'EXT_SOURCE_3': [EXT_SOURCE_3]
-    # }
+model = joblib.load('pipeline.joblib')
+   
+
+def predict(row):
     X = pd.DataFrame([row])
-    prediction = model.predict(X)[:,1]
- 
-    if prediction[0] <= 0.5 :
-        st.success('credit accordé')
-    else :
-        st.error('credit refusé')    
+    prediction = model.predict(X)[0]
+    return prediction
+   
 
 st.title(":classical_building: Prédiction de solvabilité")
 
@@ -109,12 +89,36 @@ with st.form(key='my_form'):
     EXT_SOURCE_3 = st.number_input("COT3", min_value=0.0, max_value=1.0,  step=0.001)
     st.write("COT3", EXT_SOURCE_3)
     # Autres entrées numériques...
+
+    # Afficher les données juste avant la prédiction
+    
     
     submit_button = st.form_submit_button(label='Prédire')
+    
 
-# Faire la prédiction lorsque le bouton est cliqué
 if submit_button:
-    predict()       
+
+    data = {
+        'NAME_CONTRACT_TYPE': NAME_CONTRACT_TYPE,
+        'FLAG_OWN_CAR': FLAG_OWN_CAR,
+        'CNT_CHILDREN': CNT_CHILDREN,
+        'AMT_INCOME_TOTAL': AMT_INCOME_TOTAL,
+       'AMT_CREDIT_x': AMT_CREDIT_x,
+        'AMT_ANNUITY_x': AMT_ANNUITY_x,
+         'AMT_GOODS_PRICE': AMT_GOODS_PRICE,
+        'DAYS_BIRTH': DAYS_BIRTH,
+        'DAYS_EMPLOYED': DAYS_EMPLOYED,
+        'CNT_FAM_MEMBERS':CNT_FAM_MEMBERS,
+        'EXT_SOURCE_1': EXT_SOURCE_1,
+        'EXT_SOURCE_2': EXT_SOURCE_2,
+     'EXT_SOURCE_3': EXT_SOURCE_3
+    }
+    prediction = predict(data)
+
+    if prediction == 0:
+        st.success('Crédit accordé')
+    else:
+        st.error('Crédit refusé')
 
 
 
