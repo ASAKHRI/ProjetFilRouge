@@ -13,20 +13,13 @@ st.set_page_config(
     page_icon= ":bank:",
     layout="wide",
     initial_sidebar_state="expanded")
-# Afficher les versions des bibliothèques
-st.write("Version de Streamlit:", st.__version__)
-st.write("Version de pandas:", pd.__version__)
-st.write("Version de numpy:", np.__version__)
-st.write("Version de scikit-learn:", joblib.__version__)
-
-
 
 model = joblib.load('pipeline.joblib')
    
 
-def predict(row):
+def predict_proba(row):
     X = pd.DataFrame([row])
-    prediction = model.predict(X)[0]
+    prediction = model.predict_proba(X)
     return prediction
    
 
@@ -41,10 +34,10 @@ with st.form(key='my_form'):
 
     st.subheader("nombre d'enfants")
     CNT_CHILDREN = st.number_input("Nombre d'enfants", min_value=0, max_value=10,  step=1)
-    st.write("Ancienneté professionnelle", CNT_CHILDREN)
+    st.write("nombre d'enfants", CNT_CHILDREN)
     
     st.subheader('Revenus total')
-    AMT_INCOME_TOTAL = st.number_input("Age client", min_value=0, max_value=1000000000)
+    AMT_INCOME_TOTAL = st.number_input("Revenus total", min_value=0, max_value=1000000000)
     st.write("Revenu total", AMT_INCOME_TOTAL)
 
     st.subheader('Montant Credit')
@@ -60,7 +53,7 @@ with st.form(key='my_form'):
     st.write("Montant de l'annuité", AMT_ANNUITY_x)
 
     st.subheader('Montant bien voulu')
-    AMT_GOODS_PRICE = st.number_input("Saisissez une valeur numérique", min_value=1000.0, max_value=100000000.0, step=500.0)
+    AMT_GOODS_PRICE = st.number_input("Montant bien voulu", min_value=1000.0, max_value=100000000.0, step=500.0)
     st.write("Montant du bien voulut", AMT_GOODS_PRICE)
 
     st.subheader('Age')
@@ -88,9 +81,7 @@ with st.form(key='my_form'):
     st.subheader("COT3")
     EXT_SOURCE_3 = st.number_input("COT3", min_value=0.0, max_value=1.0,  step=0.001)
     st.write("COT3", EXT_SOURCE_3)
-    # Autres entrées numériques...
 
-    # Afficher les données juste avant la prédiction
     
     
     submit_button = st.form_submit_button(label='Prédire')
@@ -113,22 +104,38 @@ if submit_button:
         'EXT_SOURCE_2': EXT_SOURCE_2,
      'EXT_SOURCE_3': EXT_SOURCE_3
     }
-    prediction = predict(data)
+    prediction = predict_proba(data)
 
-    if prediction == 0:
-        st.success('Crédit accordé')
-    else:
-        st.error('Crédit refusé')
+ 
+    col1,col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Probabilité de Remboursement")
+        rounded_prediction = round(prediction[0][0] * 100, 2)
+        st.metric("",f"{rounded_prediction}%")
+
+    with col2:
+        if prediction[0][0] > prediction[0][1]:
+            prediction_text = "Crédit accordé"
+            color = "#98FB98"  # Vert clair
+        else:
+            prediction_text = "Crédit refusé"
+            color = "#FF6347"  # Rouge
+
+        st.subheader("Décision Finale de prêt")
+        st.write('   ')
+        st.write('   ')
+        # st.write('   ')
+        st.write('   ')
+        if prediction[0][0] > 0.5:
+            st.success(prediction_text)
+        else:
+            st.error(prediction_text)
 
 
+    
 
+ 
 
-
-
-
-
-
-
-
-
-
+    
+    
