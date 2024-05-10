@@ -125,6 +125,7 @@ if submit_button:
         st.subheader("Décision Finale de prêt")
         st.write('   ')
         st.write('   ')
+        
         # st.write('   ')
         st.write('   ')
         if prediction[0][0] > 0.5:
