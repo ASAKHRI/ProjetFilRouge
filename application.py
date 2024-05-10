@@ -79,7 +79,7 @@ with st.form(key='my_form'):
     st.write("COT2", EXT_SOURCE_2)
 
     st.subheader("COT3")
-    EXT_SOURCE_3 = st.number_input("COT3", min_value=0.0, max_value=1.0,  step=0.001)
+    EXT_SOURCE_3 = st.number_input("COT3", min_value=0.00000, max_value=1.00000,  step=0.00001)
     st.write("COT3", EXT_SOURCE_3)
 
     
